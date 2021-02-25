@@ -1,0 +1,22 @@
+name: Continuous Publishing
+
+on:
+  push:
+    branches:    
+      - production
+
+jobs:
+  publish:
+    name: 'Publish'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.5'
+      - run: npm ci
+      - run: npm run bootstrap-ci
+      - run: npm run build
+      - run: npm run publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

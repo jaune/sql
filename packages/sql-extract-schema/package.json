@@ -1,0 +1,26 @@
+{
+  "name": "@jaune/sql-extract-schema",
+  "version": "0.0.0",
+  "description": "Extract SQL schema",
+  "keywords": [
+    "sql",
+    "tools",
+    "schema"
+  ],
+  "bugs": {
+    "url": "https://github.com/jaune/sql/issues"
+  },
+  "license": "GPL-3.0",
+  "author": "jaune <jaunelacouleur@gmail.com>",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "tap ./src/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/tap": "^14.10.2",
+    "tap": "^14.11.0"
+  },
+  "engines": {
+    "node": "^14.15.5"
+  }
+}

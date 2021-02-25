@@ -1,0 +1,15 @@
+{
+  "singleQuote": true,
+  "semi": false,
+  "jsxBracketSameLine": false,
+  "bracketSpacing": true,
+  "importOrder": [
+    "^@jaune/(.*)$",
+    "^src/(.*)$",
+    "^\\.\\./(.(?!\\.scss))+$",
+    "^\\./(.(?!\\.scss))+$",
+    "^\\.\\./(.+)\\.scss$",
+    "^\\./(.+)\\.scss$"
+  ],
+  "importOrderSeparation": true
+}

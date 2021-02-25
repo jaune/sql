@@ -1,0 +1,8 @@
+node_modules
+dist
+.nyc_output
+.env
+.data
+.keys
+stats.json
+package.json.lerna_backup

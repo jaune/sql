@@ -1,0 +1,5 @@
+package-lock.json
+dist
+.nyc_output
+lib
+docs/*

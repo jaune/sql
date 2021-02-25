@@ -1,5 +1,5 @@
 {
-  "name": "@jaune/sql",
+  "name": "@jaunelacouleur/sql",
   "version": "0.0.0",
   "private": true,
   "description": "SQL tools",
@@ -29,7 +29,7 @@
     "stylelint": "stylelint \"**/*.scss\" --allow-empty-input --syntax scss ",
     "test": "lerna run test",
     "build": "lerna run build",
-    "publish": "lerna publish from-package"
+    "publish": "lerna publish -y from-package"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^1.3.0",

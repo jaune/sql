@@ -6,7 +6,6 @@ on:
     branches-ignore:
       - production
 
-
 jobs:
   eslint:
     name: 'Eslint'
@@ -47,5 +46,5 @@ jobs:
         with:
           node-version: '14.15.5'
       - run: npm ci
-      - run: npm run lerna-bootstrap-ci
+      - run: npm run bootstrap-ci
       - run: npm run --quiet test

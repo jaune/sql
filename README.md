@@ -1,16 +1,16 @@
 ## Development
 
 ```sh
-# lint ts
+# lint
 $> npm run lint
 
 # format code
-# ⚠⚠⚠ runs prettier-format, it will modify your code. ⚠⚠⚠
-$> npm run prettier-format
+# ⚠⚠⚠ runs prettier-format and eslint --fix, it will modify your code. ⚠⚠⚠
+$> npm run format
 
 # fix dependencies issues
 # ⚠⚠⚠ runs lerna-audit-fix, it will modify your code. ⚠⚠⚠
-$> npm run lerna-audit-fix
+$> npm run audit-fix
 ```
 
 ### Node Version Manager

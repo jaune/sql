@@ -1,6 +1,7 @@
 {
   "name": "@jaunelacouleur/sql-extract-schema",
   "version": "0.1.0",
+  "private": false,
   "description": "Extract SQL schema",
   "keywords": [
     "sql",

@@ -1,0 +1,46 @@
+name: Continuous Integration
+
+on: [pull_request]
+
+jobs:
+  eslint:
+    name: 'Eslint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.5'
+      - run: npm ci
+      - run: npm run --quiet eslint
+  stylelint:
+    name: 'Stylelint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.5'
+      - run: npm ci
+      - run: npm run --quiet stylelint
+  prettier:
+    name: 'Prettier'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.5'
+      - run: npm ci
+      - run: npm run --quiet prettier-check
+  test:
+    name: 'Test'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.5'
+      - run: npm ci
+      - run: npm run lerna-bootstrap-ci
+      - run: npm run --quiet test

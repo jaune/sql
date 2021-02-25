@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
       - run: npm run bootstrap-ci
       - run: npm run build
-      - run: npm run publish
+      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm run publish
+

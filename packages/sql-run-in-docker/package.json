@@ -1,0 +1,48 @@
+{
+  "name": "@jaunelacouleur/sql-run-in-docker",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Run SQL in Docker",
+  "keywords": [
+    "sql",
+    "tools",
+    "schema"
+  ],
+  "bugs": {
+    "url": "https://github.com/jaune/sql/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaune/sql.git"
+  },
+  "license": "GPL-3.0",
+  "author": "jaune <jaunelacouleur@gmail.com>",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "tap ./src/**/*.test.ts --timeout=120"
+  },
+  "dependencies": {
+    "dockerode": "^3.2.1",
+    "fs-extra": "^9.1.0",
+    "tmp-promise": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.2.2",
+    "@types/fs-extra": "^9.0.7",
+    "@types/is-ci": "^2.0.0",
+    "@types/tap": "^14.10.2",
+    "is-ci": "^3.0.0",
+    "tap": "^14.11.0"
+  },
+  "engines": {
+    "node": "^14.15.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

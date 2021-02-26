@@ -1,6 +1,6 @@
 {
   "name": "@jaunelacouleur/sql-extract-schema",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "description": "Extract SQL schema",
   "keywords": [
@@ -20,8 +20,7 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "./lib/**/*",
-    "./lib/*"
+    "lib"
   ],
   "scripts": {
     "build": "tsc -p .",

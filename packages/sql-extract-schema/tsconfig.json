@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "lib": ["ES2020"],
-    "outDir": "./dist",
+    "outDir": "./lib",
     "declaration": true,
     "sourceMap": true
   },

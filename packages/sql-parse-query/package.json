@@ -1,0 +1,42 @@
+{
+  "name": "@jaunelacouleur/sql-parse-query",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Parse SQL query",
+  "keywords": [
+    "sql",
+    "tools",
+    "schema"
+  ],
+  "bugs": {
+    "url": "https://github.com/jaune/sql/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaune/sql.git"
+  },
+  "license": "GPL-3.0",
+  "author": "jaune <jaunelacouleur@gmail.com>",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "tap ./src/**/*.test.ts"
+  },
+  "dependencies": {
+    "pgsql-ast-parser": "^6.2.1"
+  },
+  "devDependencies": {
+    "@types/tap": "^14.10.2",
+    "tap": "^14.11.0"
+  },
+  "engines": {
+    "node": "^14.15.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

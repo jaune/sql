@@ -1,8 +1,3 @@
-const sql = (strings: TemplateStringsArray, ...values: Array<any>) => ({
-  text: String.raw(strings, ...values.map((_, i) => `$${i + 1}`)),
-  values,
-})
-
 type QueryFunction = (input: {
   text: string
   values: Array<any>
@@ -13,6 +8,31 @@ interface Migration {
   hash: string
   name: string
 }
+
+interface Table {
+  name: string
+  columns: Record<
+    string,
+    {
+      name: string
+      type: string
+      is_array: boolean
+      is_nullable: boolean
+      is_user_defined: boolean
+    }
+  >
+}
+
+interface Schema {
+  migrations: Array<Migration>
+  tables: Record<string, Table>
+  enums: Record<string, Array<string>>
+}
+
+const sql = (strings: TemplateStringsArray, ...values: Array<any>) => ({
+  text: String.raw(strings, ...values.map((_, i) => `$${i + 1}`)),
+  values,
+})
 
 const getEnums = async (query: QueryFunction) => {
   const res = await query(sql`
@@ -44,20 +64,6 @@ const getEnums = async (query: QueryFunction) => {
   }
 
   return enums
-}
-
-interface Table {
-  name: string
-  columns: Record<
-    string,
-    {
-      name: string
-      type: string
-      is_array: boolean
-      is_nullable: boolean
-      is_user_defined: boolean
-    }
-  >
 }
 
 const getTables = async (query: QueryFunction) => {
@@ -134,7 +140,9 @@ const getTables = async (query: QueryFunction) => {
   return tables
 }
 
-const querySchema = async (query: QueryFunction) => {
+const querySchema = async (
+  query: QueryFunction
+): Promise<Record<string, Schema>> => {
   const tables = await getTables(query)
   const enums = await getEnums(query)
 

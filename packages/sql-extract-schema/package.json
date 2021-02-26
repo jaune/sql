@@ -1,6 +1,6 @@
 {
   "name": "@jaunelacouleur/sql-extract-schema",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "Extract SQL schema",
   "keywords": [
@@ -18,8 +18,10 @@
   "license": "GPL-3.0",
   "author": "jaune <jaunelacouleur@gmail.com>",
   "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "files": [
-    "./lib/**/*"
+    "./lib/**/*",
+    "./lib/*"
   ],
   "scripts": {
     "build": "tsc -p .",

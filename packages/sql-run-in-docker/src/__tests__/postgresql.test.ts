@@ -1,5 +1,5 @@
-import { test } from 'tap'
 import isCI from 'is-ci'
+import { test } from 'tap'
 
 import runInDocker from '../postgresql'
 

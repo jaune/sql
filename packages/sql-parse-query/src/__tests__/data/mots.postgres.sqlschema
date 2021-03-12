@@ -1,0 +1,109 @@
+{
+  "public": {
+    "migrations": [],
+    "tables": {
+      "flexions": {
+        "name": "flexions",
+        "columns": {
+          "frequency": {
+            "name": "frequency",
+            "udt_name": "float4",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 700,
+            "formatted_type": "real",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": true,
+            "is_user_defined": false,
+            "character_maximum_length": null
+          },
+          "id": {
+            "name": "id",
+            "udt_name": "int4",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 23,
+            "formatted_type": "integer",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": false,
+            "is_user_defined": false,
+            "character_maximum_length": null
+          },
+          "flexion": {
+            "name": "flexion",
+            "udt_name": "varchar",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 1043,
+            "formatted_type": "character varying",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": true,
+            "is_user_defined": false,
+            "character_maximum_length": 128
+          },
+          "lemme_id": {
+            "name": "lemme_id",
+            "udt_name": "int4",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 23,
+            "formatted_type": "integer",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": false,
+            "is_user_defined": false,
+            "character_maximum_length": null
+          },
+          "frequency_index": {
+            "name": "frequency_index",
+            "udt_name": "int4",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 23,
+            "formatted_type": "integer",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": true,
+            "is_user_defined": false,
+            "character_maximum_length": null
+          }
+        }
+      },
+      "lemmes": {
+        "name": "lemmes",
+        "columns": {
+          "id": {
+            "name": "id",
+            "udt_name": "int4",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 23,
+            "formatted_type": "integer",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": false,
+            "is_user_defined": false,
+            "character_maximum_length": null
+          },
+          "lemme": {
+            "name": "lemme",
+            "udt_name": "varchar",
+            "udt_schema": "pg_catalog",
+            "pg_type_oid": 1043,
+            "formatted_type": "character varying",
+            "column_default": null,
+            "is_enum": false,
+            "is_array": false,
+            "is_nullable": true,
+            "is_user_defined": false,
+            "character_maximum_length": 128
+          }
+        }
+      }
+    },
+    "enums": {}
+  }
+}

@@ -4,7 +4,23 @@ interface Config {
   defaultSchema?: string
 }
 
-const parseQuery = (query: string, cfg?: Config) => {
+enum ColumnKind {
+  REF = 'ref'
+}
+
+export interface Column {
+  kind: ColumnKind,
+  alias: string | undefined,
+  name: string,
+  schema: string,
+  table: string,
+}
+
+interface Result {
+  columns: Array<Column>
+}
+
+const parseQuery = (query: string, cfg?: Config): Result => {
   const { defaultSchema } = {
     defaultSchema: 'public',
     ...cfg,
@@ -54,7 +70,7 @@ const parseQuery = (query: string, cfg?: Config) => {
         }
 
         return {
-          kind: 'ref',
+          kind: ColumnKind.REF,
           alias,
           name: expr.name,
           schema,
@@ -66,7 +82,7 @@ const parseQuery = (query: string, cfg?: Config) => {
           `column expression of type '${column.expr.type}' unsupported`
         )
     }
-  })
+  }) || []
 
   return {
     columns,

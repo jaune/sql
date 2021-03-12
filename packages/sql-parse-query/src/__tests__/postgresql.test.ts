@@ -1,11 +1,13 @@
 import { test } from 'tap'
+import { readJSONSync } from 'fs-extra'
+import { resolve } from 'path'
 
-import parse from '../postgresql'
+import parse, { Column } from '../postgresql'
 
 const QUERIES = [
   {
     query: `SELECT lemme FROM lemmes WHERE lemme LIMIT 10`,
-    expectedResult: {
+    expected: {
       columns: [
         {
           kind: 'ref',
@@ -13,13 +15,14 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
+          type: 'character varying(128)',
         },
       ],
     },
   },
   {
     query: `SELECT id, lemme FROM lemmes WHERE lemme LIMIT 10`,
-    expectedResult: {
+    expected: {
       columns: [
         {
           kind: 'ref',
@@ -27,6 +30,7 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
+          type: 'integer',
         },
         {
           kind: 'ref',
@@ -34,17 +38,39 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
+          type: 'character varying(128)',
         },
       ],
     },
   },
 ]
 
-QUERIES.forEach(({ query, expectedResult }) => {
+const sqlschema = readJSONSync(resolve(__dirname, './data/mots.postgres.sqlschema'))
+
+const infer = (columns: Array<Column>, schema: any) => (
+  columns.map((column) => {
+    const t = schema.public.tables[column.table]
+    const c = t.columns[column.name]
+    let type = c.formatted_type
+
+    if (type === 'character varying') {
+      type = `${type}(${c.character_maximum_length})`
+    }
+
+    return {
+      ...column,
+      type,
+    }
+  })
+)
+
+QUERIES.forEach(({ query, expected }) => {
   test(`parse ${query}`, async (tap) => {
     const result = parse(query)
 
-    tap.deepEqual(result, expectedResult)
+    const columns = infer(result.columns, sqlschema)
+
+    tap.deepEqual({ columns }, expected)
 
     tap.end()
   })

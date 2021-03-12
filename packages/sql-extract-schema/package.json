@@ -24,10 +24,15 @@
   ],
   "scripts": {
     "build": "tsc -p .",
-    "test": "tap ./src/**/*.test.ts"
+    "test": "tap ./src/**/*.test.ts --timeout=120"
   },
   "devDependencies": {
+    "@jaunelacouleur/sql-run-in-docker": "^0.1.0",
+    "@types/fs-extra": "^9.0.7",
+    "@types/pg": "^7.14.10",
     "@types/tap": "^14.10.2",
+    "fs-extra": "^9.1.0",
+    "pg": "^8.5.1",
     "tap": "^14.11.0"
   },
   "engines": {

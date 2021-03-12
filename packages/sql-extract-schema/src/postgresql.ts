@@ -15,10 +15,16 @@ interface Table {
     string,
     {
       name: string
-      type: string
+      udt_name: string
+      udt_schema: string
+      pg_type_oid: number
+      formatted_type: string
+      column_default: null | string
+      is_enum: boolean
       is_array: boolean
       is_nullable: boolean
       is_user_defined: boolean
+      character_maximum_length: number | null
     }
   >
 }
@@ -36,20 +42,23 @@ const sql = (strings: TemplateStringsArray, ...values: Array<any>) => ({
 
 const getEnums = async (query: QueryFunction) => {
   const res = await query(sql`
-		SELECT
-			n.nspname AS schema,
-			t.typname AS name,
-			e.enumlabel AS value
-		FROM
-			pg_type t
-			JOIN pg_enum e ON t.oid = e.enumtypid
-			JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
-		ORDER BY
-			t.typname ASC,
-			e.enumlabel ASC
-	`)
+    SELECT
+    	t.oid AS oid,
+      n.nspname AS schema,
+      t.typname AS name,
+      e.enumlabel AS value,
+      e.enumsortorder AS order
+    FROM
+      pg_type t
+      JOIN pg_enum e ON t.oid = e.enumtypid
+      JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+    ORDER BY
+      t.oid ASC,
+      e.enumsortorder ASC
+  `)
 
   const enums: Record<string, Record<string, Array<string>>> = {}
+
   for (const row of res.rows) {
     const { schema, name, value } = row
     if (!enums[schema]) {
@@ -63,46 +72,54 @@ const getEnums = async (query: QueryFunction) => {
     enums[schema][name].push(value)
   }
 
+  Object.values(enums).forEach((enums) => {
+    for (const key in enums) {
+      enums[key].sort()
+    }
+  })
+
   return enums
 }
 
-const getTables = async (query: QueryFunction) => {
+const queryColumns = async (query: QueryFunction) => {
   const res = await query(sql`
-		SELECT
-			c.table_schema AS schema,
-			c.table_name AS table,
-			c.column_name AS column,
-			CASE
-				WHEN c.data_type = 'ARRAY' THEN CASE
-					WHEN e.data_type = 'USER-DEFINED' THEN e.udt_name
-					ELSE e.data_type
-				END
-				WHEN c.data_type = 'USER-DEFINED' THEN c.udt_name
-				ELSE c.data_type
-			END AS type,
-			CASE
-				WHEN c.data_type = 'ARRAY' THEN true
+    SELECT
+      c.table_schema AS schema,
+      c.table_name AS table,
+      c.column_name AS column,
+      c.column_default AS column_default,
+      c.udt_name AS udt_name,
+      c.udt_schema AS udt_schema,
+      c.character_maximum_length AS character_maximum_length,
+      pg_type.oid AS pg_type_oid,
+      format_type(pg_type.oid, null) AS formatted_type,
+      CASE
+        WHEN c.data_type = 'USER-DEFINED' THEN true
+				ELSE false
+			END AS is_user_defined,
+      CASE
+        WHEN c.data_type = 'ARRAY' THEN true
 				ELSE false
 			END AS is_array,
-			CASE
-				WHEN c.is_nullable = 'YES' THEN true
-				ELSE false
-			END AS is_nullable,
-			CASE
-				WHEN c.data_type = 'ARRAY' THEN CASE
-					WHEN e.data_type = 'USER-DEFINED' THEN true
-					ELSE false
-				END
-				WHEN c.data_type = 'USER-DEFINED' THEN true
-				ELSE false
-			END AS is_user_defined
-		FROM
-			information_schema.columns c
-			LEFT JOIN information_schema.element_types e ON (
-				(c.table_catalog,  c.table_schema,  c.table_name, 'TABLE',        c.dtd_identifier) =
-				(e.object_catalog, e.object_schema, e.object_name, e.object_type, e.collection_type_identifier)
-			)
-	`)
+      CASE
+        WHEN c.is_nullable = 'YES' THEN true
+        ELSE false
+      END AS is_nullable,
+      CASE
+        WHEN pg_type.typtype = 'e' THEN true
+        ELSE false
+      END AS is_enum
+    FROM
+      information_schema.columns c
+    LEFT JOIN
+      pg_namespace ON pg_namespace.nspname = c.udt_schema
+    LEFT JOIN
+      pg_type ON
+        pg_type.typnamespace = pg_namespace.oid
+        AND
+        pg_type.typname = c.udt_name
+    WHERE c.table_schema = 'public'
+  `)
 
   const tables: Record<string, Record<string, Table>> = {}
 
@@ -111,7 +128,13 @@ const getTables = async (query: QueryFunction) => {
       schema,
       table,
       column,
-      type,
+      column_default,
+      udt_name,
+      udt_schema,
+      pg_type_oid,
+      formatted_type,
+      character_maximum_length,
+      is_enum,
       is_array,
       is_nullable,
       is_user_defined,
@@ -130,10 +153,16 @@ const getTables = async (query: QueryFunction) => {
 
     tables[schema][table].columns[column] = {
       name: column,
-      type,
+      udt_name,
+      udt_schema,
+      pg_type_oid,
+      formatted_type,
+      column_default,
+      is_enum,
       is_array,
       is_nullable,
       is_user_defined,
+      character_maximum_length,
     }
   }
 
@@ -143,25 +172,25 @@ const getTables = async (query: QueryFunction) => {
 const querySchema = async (
   query: QueryFunction
 ): Promise<Record<string, Schema>> => {
-  const tables = await getTables(query)
+  const tables = await queryColumns(query)
   const enums = await getEnums(query)
-
-  const res = await query(sql`
-		SELECT
-      id,
-      hash,
-			name
-		FROM
-      migrations
-		ORDER BY
-      id ASC
-  `)
 
   const migrations: Array<Migration> = []
 
-  for (const row of res.rows) {
-    migrations.push(row as Migration)
-  }
+  // const res = await query(sql`
+  //   SELECT
+  //     id,
+  //     hash,
+  //     name
+  //   FROM
+  //     migrations
+  //   ORDER BY
+  //     id ASC
+  // `)
+
+  // for (const row of res.rows) {
+  //   migrations.push(row as Migration)
+  // }
 
   const result: Record<
     string,

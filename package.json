@@ -25,7 +25,7 @@
     "lint": "concurrently \"npm run --quiet eslint\" \"npm run --quiet stylelint\" \"npm run --quiet prettier-check\"",
     "prettier-check": "prettier --loglevel warn --check .",
     "prettier-format": "prettier --write .",
-    "format": "npm run --quiet eslint -- --fix && npm run --quiet stylelint -- --fix  && npm run --quiet prettier-format",
+    "format": "npm run --quiet eslint -- --fix && npm run --quiet stylelint -- --fix && npm run --quiet prettier-format",
     "stylelint": "stylelint \"**/*.scss\" --allow-empty-input --syntax scss ",
     "test": "lerna run test",
     "build": "lerna run build",

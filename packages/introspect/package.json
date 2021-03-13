@@ -26,6 +26,9 @@
     "build": "tsc -p .",
     "test": "tap ./src/**/*.test.ts --timeout=120"
   },
+  "dependencies": {
+    "@jaune-sql/introspection": "0.2.0"
+  },
   "devDependencies": {
     "@jaune-sql/run-in-docker": "^0.1.0",
     "@types/fs-extra": "^9.0.7",
@@ -40,8 +43,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@jaune-sql/introspection": "0.2.0"
   }
 }

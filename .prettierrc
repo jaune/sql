@@ -3,6 +3,7 @@
   "semi": false,
   "jsxBracketSameLine": false,
   "bracketSpacing": true,
+  "arrowParens": "always",
   "importOrder": [
     "^@jaune/(.*)$",
     "^src/(.*)$",

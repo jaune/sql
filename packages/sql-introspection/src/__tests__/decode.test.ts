@@ -5,20 +5,16 @@ import decode from '../decode'
 test('null', (t) => {
   try {
     decode(null)
-
-  }
-  catch (error) {
+  } catch (error) {
     t.pass()
   }
   t.end()
 })
 
-
 test('{}', (t) => {
   try {
     decode({})
-  }
-  catch (error) {
+  } catch (error) {
     t.pass()
   }
   t.end()

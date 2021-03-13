@@ -26,6 +26,10 @@
     "build": "tsc -p .",
     "test": "tap ./src/**/*.test.ts --timeout=120"
   },
+  "dependencies": {
+    "fp-ts": "^2.9.5",
+    "io-ts": "^2.2.16"
+  },
   "devDependencies": {
     "@types/tap": "^14.10.2",
     "tap": "^14.11.0"
@@ -35,9 +39,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "fp-ts": "^2.9.5",
-    "io-ts": "^2.2.16"
   }
 }

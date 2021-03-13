@@ -1,5 +1,5 @@
-import * as t from 'io-ts'
 import { isRight } from 'fp-ts/lib/Either'
+import * as t from 'io-ts'
 
 import { Introspection } from './index'
 
@@ -36,7 +36,7 @@ const tSchema = t.type({
 })
 
 const tIntrospection = t.type({
-  schemas: t.record(t.string, tSchema)
+  schemas: t.record(t.string, tSchema),
 })
 
 const decode = (data: any): Introspection | null => {

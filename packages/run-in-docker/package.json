@@ -35,9 +35,7 @@
     "@types/dockerode": "^3.2.2",
     "@types/fs-extra": "^9.0.7",
     "@types/is-ci": "^2.0.0",
-    "@types/tap": "^14.10.2",
-    "is-ci": "^3.0.0",
-    "tap": "^14.11.0"
+    "is-ci": "^3.0.0"
   },
   "engines": {
     "node": "^14.15.5"

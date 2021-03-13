@@ -31,9 +31,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.8",
-    "@types/tap": "^14.10.2",
-    "fs-extra": "^9.1.0",
-    "tap": "^14.11.0"
+    "fs-extra": "^9.1.0"
   },
   "engines": {
     "node": "^14.15.5"

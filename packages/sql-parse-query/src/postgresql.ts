@@ -1,17 +1,26 @@
 import { Statement, parse as parseAST } from 'pgsql-ast-parser'
 
 interface Introspection {
-  schemas: Record<string, {
-    name: string
-    tables: Record<string, {
+  schemas: Record<
+    string,
+    {
       name: string
-      columns: Record<string, {
-        name: string
-        formatted_type: string
-        character_maximum_length?: number
-      }>
-    }>
-  }>
+      tables: Record<
+        string,
+        {
+          name: string
+          columns: Record<
+            string,
+            {
+              name: string
+              formatted_type: string
+              character_maximum_length?: number
+            }
+          >
+        }
+      >
+    }
+  >
 }
 
 interface Config {
@@ -19,19 +28,19 @@ interface Config {
 }
 
 enum QueryKind {
-  SELECT = 'select'
+  SELECT = 'select',
 }
 
 enum ColumnKind {
-  REF = 'ref'
+  REF = 'ref',
 }
 
 export interface Column {
-  kind: ColumnKind,
-  alias: string | undefined,
-  name: string,
-  schema: string,
-  table: string,
+  kind: ColumnKind
+  alias: string | undefined
+  name: string
+  schema: string
+  table: string
 }
 
 export enum TypeKind {
@@ -55,12 +64,12 @@ interface InferredColumn extends Column {
 }
 
 interface ParsedQuery {
-  kind: QueryKind,
+  kind: QueryKind
   columns: Array<Column>
 }
 
 interface InferredQuery {
-  kind: QueryKind,
+  kind: QueryKind
   columns: Array<InferredColumn>
 }
 
@@ -98,35 +107,36 @@ export const parse = (query: string, cfg?: Config): ParsedQuery => {
 
   const tablesWithoutAlias = tables.filter((table) => !table.alias)
 
-  const columns = statement.columns?.map((column) => {
-    const alias = column.alias?.name
-    const expr = column.expr
+  const columns =
+    statement.columns?.map((column) => {
+      const alias = column.alias?.name
+      const expr = column.expr
 
-    switch (expr.type) {
-      case 'ref': {
-        const schema = expr.table?.schema || defaultSchema
-        const table =
-          expr.table?.name ||
-          tablesWithoutAlias.find((t) => t.schema === schema)?.name
+      switch (expr.type) {
+        case 'ref': {
+          const schema = expr.table?.schema || defaultSchema
+          const table =
+            expr.table?.name ||
+            tablesWithoutAlias.find((t) => t.schema === schema)?.name
 
-        if (!table) {
-          throw new Error(`Unable to find table for column '${expr.name}'`)
+          if (!table) {
+            throw new Error(`Unable to find table for column '${expr.name}'`)
+          }
+
+          return {
+            kind: ColumnKind.REF,
+            alias,
+            name: expr.name,
+            schema,
+            table,
+          }
         }
-
-        return {
-          kind: ColumnKind.REF,
-          alias,
-          name: expr.name,
-          schema,
-          table,
-        }
+        default:
+          throw new Error(
+            `column expression of type '${column.expr.type}' unsupported`
+          )
       }
-      default:
-        throw new Error(
-          `column expression of type '${column.expr.type}' unsupported`
-        )
-    }
-  }) || []
+    }) || []
 
   return {
     kind: QueryKind.SELECT,
@@ -134,32 +144,37 @@ export const parse = (query: string, cfg?: Config): ParsedQuery => {
   }
 }
 
-export const infer = (introspection: Introspection, query: ParsedQuery): InferredQuery => {
+export const infer = (
+  introspection: Introspection,
+  query: ParsedQuery
+): InferredQuery => {
   return {
     ...query,
-    columns: query.columns.map((column): InferredColumn => {
-      const t = introspection.schemas[column.schema].tables[column.table]
-      const c = t.columns[column.name]
+    columns: query.columns.map(
+      (column): InferredColumn => {
+        const t = introspection.schemas[column.schema].tables[column.table]
+        const c = t.columns[column.name]
 
-      switch (c.formatted_type) {
-        case 'character varying':
-          return {
-            ...column,
-            type: {
-              kind: TypeKind.CHARACTER_VARYING,
-              length: c.character_maximum_length,
+        switch (c.formatted_type) {
+          case 'character varying':
+            return {
+              ...column,
+              type: {
+                kind: TypeKind.CHARACTER_VARYING,
+                length: c.character_maximum_length,
+              },
             }
-          }
-        case 'integer':
-          return {
-            ...column,
-            type: {
-              kind: TypeKind.INTEGER,
+          case 'integer':
+            return {
+              ...column,
+              type: {
+                kind: TypeKind.INTEGER,
+              },
             }
-          }
-        default:
-          throw new Error(`Unsupported type ${c.formatted_type}`);
+          default:
+            throw new Error(`Unsupported type ${c.formatted_type}`)
+        }
       }
-    })
+    ),
   }
 }

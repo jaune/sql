@@ -1,6 +1,6 @@
-import { test } from 'tap'
 import { readJSONSync } from 'fs-extra'
 import { resolve } from 'path'
+import { test } from 'tap'
 
 import { parse, infer, TypeKind } from '../postgresql'
 
@@ -74,7 +74,9 @@ const QUERIES = [
   },
 ]
 
-const sqlintrospection = readJSONSync(resolve(__dirname, './data/mots.postgres.sqlintrospection'))
+const sqlintrospection = readJSONSync(
+  resolve(__dirname, './data/mots.postgres.sqlintrospection')
+)
 
 QUERIES.forEach(({ query, expected }) => {
   test(`parse ${query}`, async (tap) => {

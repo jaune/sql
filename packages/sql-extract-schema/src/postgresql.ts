@@ -174,9 +174,7 @@ const queryColumns = async (query: QueryFunction) => {
   return tables
 }
 
-const introspect = async (
-  query: QueryFunction
-): Promise<Introspection> => {
+const introspect = async (query: QueryFunction): Promise<Introspection> => {
   const tables = await queryColumns(query)
   const enums = await getEnums(query)
 
@@ -209,7 +207,7 @@ const introspect = async (
   }
 
   return {
-    schemas
+    schemas,
   }
 }
 

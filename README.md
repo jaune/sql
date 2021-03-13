@@ -1,3 +1,7 @@
+[![Continuous Integration](https://github.com/jaune/sql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/jaune/sql/actions/workflows/continuous-integration.yml)
+
+# SQL
+
 ## Development
 
 ```sh
@@ -12,8 +16,3 @@ $> npm run format
 # ⚠⚠⚠ runs lerna-audit-fix, it will modify your code. ⚠⚠⚠
 $> npm run audit-fix
 ```
-
-### Node Version Manager
-
-- [nvs](https://github.com/jasongin/nvs)
-- [nvm](https://github.com/nvm-sh/nvm)

@@ -16,6 +16,7 @@ jobs:
           node-version: '14.15.5'
       - run: npm ci
       - run: npm run bootstrap-ci
+      - run: npm run --quiet build
       - run: npm run --quiet test
   publish:
     name: 'Publish'

@@ -69,7 +69,7 @@ const runPostgresqlInDocker = async <R>(
       const network = info.NetworkSettings.Ports['5432/tcp']?.[0] || null
 
       if (!network) {
-        throw new Error('No binding for 5432/tcp')
+        throw new Error('No binding found for 5432/tcp')
       }
 
       await new Promise((resolve) => {

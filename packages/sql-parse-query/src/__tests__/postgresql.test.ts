@@ -2,12 +2,13 @@ import { test } from 'tap'
 import { readJSONSync } from 'fs-extra'
 import { resolve } from 'path'
 
-import parse, { Column } from '../postgresql'
+import { parse, infer, TypeKind } from '../postgresql'
 
 const QUERIES = [
   {
     query: `SELECT lemme FROM lemmes WHERE lemme LIMIT 10`,
     expected: {
+      kind: 'select',
       columns: [
         {
           kind: 'ref',
@@ -15,7 +16,29 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
-          type: 'character varying(128)',
+          type: {
+            kind: TypeKind.CHARACTER_VARYING,
+            length: 128,
+          },
+        },
+      ],
+    },
+  },
+  {
+    query: `SELECT lemme AS l FROM lemmes WHERE lemme LIMIT 10`,
+    expected: {
+      kind: 'select',
+      columns: [
+        {
+          kind: 'ref',
+          name: 'lemme',
+          table: 'lemmes',
+          schema: 'public',
+          alias: 'l',
+          type: {
+            kind: TypeKind.CHARACTER_VARYING,
+            length: 128,
+          },
         },
       ],
     },
@@ -23,6 +46,7 @@ const QUERIES = [
   {
     query: `SELECT id, lemme FROM lemmes WHERE lemme LIMIT 10`,
     expected: {
+      kind: 'select',
       columns: [
         {
           kind: 'ref',
@@ -30,7 +54,9 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
-          type: 'integer',
+          type: {
+            kind: TypeKind.INTEGER,
+          },
         },
         {
           kind: 'ref',
@@ -38,39 +64,25 @@ const QUERIES = [
           table: 'lemmes',
           schema: 'public',
           alias: undefined,
-          type: 'character varying(128)',
+          type: {
+            kind: TypeKind.CHARACTER_VARYING,
+            length: 128,
+          },
         },
       ],
     },
   },
 ]
 
-const sqlschema = readJSONSync(resolve(__dirname, './data/mots.postgres.sqlschema'))
-
-const infer = (columns: Array<Column>, schema: any) => (
-  columns.map((column) => {
-    const t = schema.public.tables[column.table]
-    const c = t.columns[column.name]
-    let type = c.formatted_type
-
-    if (type === 'character varying') {
-      type = `${type}(${c.character_maximum_length})`
-    }
-
-    return {
-      ...column,
-      type,
-    }
-  })
-)
+const sqlintrospection = readJSONSync(resolve(__dirname, './data/mots.postgres.sqlintrospection'))
 
 QUERIES.forEach(({ query, expected }) => {
   test(`parse ${query}`, async (tap) => {
-    const result = parse(query)
+    const parsed = parse(query)
 
-    const columns = infer(result.columns, sqlschema)
+    const inferred = infer(sqlintrospection, parsed)
 
-    tap.deepEqual({ columns }, expected)
+    tap.deepEqual(inferred, expected)
 
     tap.end()
   })

@@ -1,7 +1,25 @@
-import { Statement, parse } from 'pgsql-ast-parser'
+import { Statement, parse as parseAST } from 'pgsql-ast-parser'
+
+interface Introspection {
+  schemas: Record<string, {
+    name: string
+    tables: Record<string, {
+      name: string
+      columns: Record<string, {
+        name: string
+        formatted_type: string
+        character_maximum_length?: number
+      }>
+    }>
+  }>
+}
 
 interface Config {
   defaultSchema?: string
+}
+
+enum QueryKind {
+  SELECT = 'select'
 }
 
 enum ColumnKind {
@@ -16,17 +34,43 @@ export interface Column {
   table: string,
 }
 
-interface Result {
+export enum TypeKind {
+  CHARACTER_VARYING = 'character varying',
+  INTEGER = 'integer',
+}
+
+interface CharacterVaryingType {
+  kind: TypeKind.CHARACTER_VARYING
+  length: number | undefined
+}
+
+interface IntegerType {
+  kind: TypeKind.INTEGER
+}
+
+type Type = CharacterVaryingType | IntegerType
+
+interface InferredColumn extends Column {
+  type: Type
+}
+
+interface ParsedQuery {
+  kind: QueryKind,
   columns: Array<Column>
 }
 
-const parseQuery = (query: string, cfg?: Config): Result => {
+interface InferredQuery {
+  kind: QueryKind,
+  columns: Array<InferredColumn>
+}
+
+export const parse = (query: string, cfg?: Config): ParsedQuery => {
   const { defaultSchema } = {
     defaultSchema: 'public',
     ...cfg,
   }
 
-  const ast: Statement[] = parse(query)
+  const ast: Statement[] = parseAST(query)
 
   if (ast.length > 1) {
     throw new Error('multiple statements unsupported')
@@ -85,8 +129,37 @@ const parseQuery = (query: string, cfg?: Config): Result => {
   }) || []
 
   return {
+    kind: QueryKind.SELECT,
     columns,
   }
 }
 
-export default parseQuery
+export const infer = (introspection: Introspection, query: ParsedQuery): InferredQuery => {
+  return {
+    ...query,
+    columns: query.columns.map((column): InferredColumn => {
+      const t = introspection.schemas[column.schema].tables[column.table]
+      const c = t.columns[column.name]
+
+      switch (c.formatted_type) {
+        case 'character varying':
+          return {
+            ...column,
+            type: {
+              kind: TypeKind.CHARACTER_VARYING,
+              length: c.character_maximum_length,
+            }
+          }
+        case 'integer':
+          return {
+            ...column,
+            type: {
+              kind: TypeKind.INTEGER,
+            }
+          }
+        default:
+          throw new Error(`Unsupported type ${c.formatted_type}`);
+      }
+    })
+  }
+}

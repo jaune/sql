@@ -40,5 +40,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@jaunelacouleur/sql-introspection": "0.2.0"
   }
 }

@@ -1,10 +1,10 @@
-interface Migration {
+export interface Migration {
   id: number
   hash: string
   name: string
 }
 
-interface Table {
+export interface Table {
   name: string
   columns: Record<
     string,
@@ -24,7 +24,7 @@ interface Table {
   >
 }
 
-interface Schema {
+export interface Schema {
   name: string
   migrations: Array<Migration>
   tables: Record<string, Table>

@@ -1,44 +1,9 @@
+import { Introspection, Migration, Table, Schema } from '@jaunelacouleur/sql-introspection'
+
 type QueryFunction = (input: {
   text: string
   values: Array<any>
 }) => Promise<{ rows: Array<Record<string, any>> }>
-
-interface Migration {
-  id: number
-  hash: string
-  name: string
-}
-
-interface Table {
-  name: string
-  columns: Record<
-    string,
-    {
-      name: string
-      udt_name: string
-      udt_schema: string
-      pg_type_oid: number
-      formatted_type: string
-      column_default: null | string
-      is_enum: boolean
-      is_array: boolean
-      is_nullable: boolean
-      is_user_defined: boolean
-      character_maximum_length: number | null
-    }
-  >
-}
-
-interface Schema {
-  name: string
-  migrations: Array<Migration>
-  tables: Record<string, Table>
-  enums: Record<string, Array<string>>
-}
-
-interface Introspection {
-  schemas: Record<string, Schema>
-}
 
 const sql = (strings: TemplateStringsArray, ...values: Array<any>) => ({
   text: String.raw(strings, ...values.map((_, i) => `$${i + 1}`)),

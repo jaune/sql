@@ -1,5 +1,5 @@
 {
-  "name": "@jaunelacouleur/sql-extract-schema",
+  "name": "@jaunelacouleur/sql-introspect",
   "version": "1.0.3",
   "private": false,
   "description": "Extract SQL schema",

@@ -5,12 +5,12 @@ import { Client } from 'pg'
 import { test } from 'tap'
 import globby from 'globby'
 
-import querySchema from '../postgresql'
+import introspect from '../postgresql'
 
 globby.sync(resolve(__dirname, 'data/*.postgres.sql'), {   })
   .forEach((inputPath) => {
     const name = basename(inputPath)
-    const outputPath = inputPath + 'schema'
+    const outputPath = inputPath + 'introspection'
 
     test(name, async (tap) => {
       const fixture = await readFile(
@@ -24,7 +24,7 @@ globby.sync(resolve(__dirname, 'data/*.postgres.sql'), {   })
 
         await client.query(fixture)
 
-        const schema = await querySchema(client.query.bind(client))
+        const schema = await introspect(client.query.bind(client))
 
         await client.end()
 
@@ -35,7 +35,7 @@ globby.sync(resolve(__dirname, 'data/*.postgres.sql'), {   })
 
       if (!exists) {
         await writeJSON(outputPath, schema, { spaces: 2 })
-        tap.skip('write snapshot')
+        tap.skip(`write snapshot: ${name}`)
       }
       else {
         const expected = await readJSON(

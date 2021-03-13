@@ -30,9 +30,14 @@ interface Table {
 }
 
 interface Schema {
+  name: string
   migrations: Array<Migration>
   tables: Record<string, Table>
   enums: Record<string, Array<string>>
+}
+
+interface Introspection {
+  schemas: Record<string, Schema>
 }
 
 const sql = (strings: TemplateStringsArray, ...values: Array<any>) => ({
@@ -169,9 +174,9 @@ const queryColumns = async (query: QueryFunction) => {
   return tables
 }
 
-const querySchema = async (
+const introspect = async (
   query: QueryFunction
-): Promise<Record<string, Schema>> => {
+): Promise<Introspection> => {
   const tables = await queryColumns(query)
   const enums = await getEnums(query)
 
@@ -192,24 +197,20 @@ const querySchema = async (
   //   migrations.push(row as Migration)
   // }
 
-  const result: Record<
-    string,
-    {
-      migrations: Array<Migration>
-      tables: Record<string, Table>
-      enums: Record<string, Array<string>>
-    }
-  > = {}
-  const schemas = Object.keys(tables)
-  for (const schema of schemas) {
-    result[schema] = {
+  const schemas: Record<string, Schema> = {}
+
+  for (const schemaName of Object.keys(tables)) {
+    schemas[schemaName] = {
+      name: schemaName,
       migrations,
-      tables: tables[schema],
-      enums: enums[schema] || {},
+      tables: tables[schemaName],
+      enums: enums[schemaName] || {},
     }
   }
 
-  return result
+  return {
+    schemas
+  }
 }
 
-export default querySchema
+export default introspect

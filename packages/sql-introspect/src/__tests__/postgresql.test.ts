@@ -1,4 +1,4 @@
-import runInDocker from '@jaunelacouleur/sql-run-in-docker/lib/postgresql'
+import runInDocker from '@jaune-sql/run-in-docker/lib/postgresql'
 import { readFile, readJSON, pathExists, writeJSON } from 'fs-extra'
 import globby from 'globby'
 import { resolve, basename } from 'path'

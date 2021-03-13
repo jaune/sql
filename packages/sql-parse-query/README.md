@@ -1,7 +1,7 @@
-# @jaunelacouleur/sql-parse-query
+# @jaune-sql/parse-query
 
 ```ts
-import { infer, parse, QueryKind, ColumnKind } from '@jaunelacouleur/sql-parse-query/lib/postgresql'
+import { infer, parse, QueryKind, ColumnKind } from '@jaune-sql/parse-query/lib/postgresql'
 
 // parse string
 const parsed = parse('SELECT lemme FROM lemmes WHERE lemme LIMIT 10')

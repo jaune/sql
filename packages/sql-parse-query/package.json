@@ -1,5 +1,5 @@
 {
-  "name": "@jaunelacouleur/sql-parse-query",
+  "name": "@jaune-sql/parse-query",
   "version": "0.1.0",
   "private": false,
   "description": "Parse SQL query",

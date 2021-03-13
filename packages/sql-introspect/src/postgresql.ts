@@ -1,4 +1,4 @@
-import { Introspection, Migration, Table, Schema } from '@jaunelacouleur/sql-introspection'
+import { Introspection, Migration, Table, Schema } from '@jaune-sql/introspection'
 
 type QueryFunction = (input: {
   text: string

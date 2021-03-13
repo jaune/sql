@@ -1,5 +1,5 @@
 {
-  "name": "@jaunelacouleur/sql-introspection",
+  "name": "@jaune-sql/introspection",
   "version": "0.2.0",
   "private": false,
   "description": "SQL introspection",

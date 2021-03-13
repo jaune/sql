@@ -1,7 +1,7 @@
 # sql-introspection
 
 ```ts
-import decode from '@jaunelacouleur/sql-introspection/lib/decode'
+import decode from '@jaune-sql/introspection/lib/decode'
 
 const decoded = decode({ ... })
 ```

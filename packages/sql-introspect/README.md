@@ -1,5 +1,5 @@
 # sql-introspect
 
 ```ts
-import introspect from '@jaunelacouleur/sql-introspect/lib/postgresql'
+import introspect from '@jaune-sql/introspect/lib/postgresql'
 ```
